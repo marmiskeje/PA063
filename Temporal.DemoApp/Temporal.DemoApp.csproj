@@ -123,7 +123,7 @@
       <Project>{415cfdb3-45b2-48f7-a47d-b08362916220}</Project>
       <Name>Temporal.DAL.MSSQL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Temporal.DAL.PostgresNoTemporary\Temporal.DAL.PostgresNoTemporal.csproj">
+    <ProjectReference Include="..\Temporal.DAL.PostgresNoTemporal\Temporal.DAL.PostgresNoTemporal.csproj">
       <Project>{b63e3de9-1b31-42fa-b1ec-7a42468646bb}</Project>
       <Name>Temporal.DAL.PostgresNoTemporal</Name>
     </ProjectReference>

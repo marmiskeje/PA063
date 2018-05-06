@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporal.DAL.Contracts", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporal.DAL.MSSQL", "Temporal.DAL.MSSQL\Temporal.DAL.MSSQL.csproj", "{415CFDB3-45B2-48F7-A47D-B08362916220}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporal.DAL.PostgresNoTemporal", "Temporal.DAL.PostgresNoTemporary\Temporal.DAL.PostgresNoTemporal.csproj", "{B63E3DE9-1B31-42FA-B1EC-7A42468646BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporal.DAL.PostgresNoTemporal", "Temporal.DAL.PostgresNoTemporal\Temporal.DAL.PostgresNoTemporal.csproj", "{B63E3DE9-1B31-42FA-B1EC-7A42468646BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporal.DAL.PostgresTemporal", "Temporal.DAL.PostgresTemporal\Temporal.DAL.PostgresTemporal.csproj", "{2D61BFCF-FC08-4CFD-A6D5-84861FBCC5CD}"
 EndProject
