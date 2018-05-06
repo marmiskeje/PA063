@@ -1,0 +1,176 @@
+﻿<Window x:Class="Temporal.DemoApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Temporal.DemoApp"
+        mc:Ignorable="d"
+        Title="Company history" Height="600" Width="800" FontSize="16">
+    <Window.Resources>
+        <local:ChangeStateToVisibilityConverter x:Key="stateToVisibilityConverter" />
+        <local:ChangeStateToForegroundConverter x:Key="stateToColorConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Provider: " VerticalAlignment="Center" />
+            <ComboBox ItemsSource="{Binding Providers}" SelectedItem="{Binding SelectedProvider, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+        <TabControl Grid.Row="1">
+            <TabItem Header="Structure - snapshot in time">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250" />
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <DatePicker SelectedDate="{Binding SnapshotDateTime}" FirstDayOfWeek="Monday" SelectedDateFormat="Long" />
+                    <Button Grid.Column="1" Content="Get snapshot" Command="{Binding GetSnapshotCommand}" />
+                    <Grid Grid.ColumnSpan="10" Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label Content="Company structure" FontSize="20" />
+                        <TreeView Grid.Column="0" Grid.Row="1" ItemsSource="{Binding SnapshotItems}">
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <Setter Property="IsExpanded" Value="True"/>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type local:BranchViewModel}" ItemsSource="{Binding Children}">
+                                    <TreeViewItem IsExpanded="True">
+                                        <TreeViewItem.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Name}" Foreground="{Binding State, Converter={StaticResource stateToColorConverter}}" />
+                                                <TextBlock Text=" [NEW]" Foreground="Green" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:BranchState.New}}" />
+                                                <TextBlock Text=" [CANCELED]" Foreground="Red" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:BranchState.Removed}}" />
+                                            </StackPanel>
+                                        </TreeViewItem.Header>
+                                    </TreeViewItem>
+                                </HierarchicalDataTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type local:EmployeeViewModel}">
+                                    <TreeViewItem IsExpanded="True">
+                                        <TreeViewItem.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding FullName}" Foreground="{Binding State, Converter={StaticResource stateToColorConverter}}" />
+                                                <TextBlock Text=" [NEW]" Foreground="Green" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:EmployeeState.New}}" />
+                                                <TextBlock Text=" [LEFT]" Foreground="Red" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:EmployeeState.Removed}}" />
+                                            </StackPanel>
+                                        </TreeViewItem.Header>
+                                    </TreeViewItem>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Structure - point in time comparison">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="25" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <DatePicker SelectedDate="{Binding CompareLeftDateTime}" FirstDayOfWeek="Monday" SelectedDateFormat="Long" MaxWidth="300" />
+                    <DatePicker Grid.Column="1" SelectedDate="{Binding CompareRightDateTime}" FirstDayOfWeek="Monday" SelectedDateFormat="Long" MaxWidth="300" />
+                    <Button Grid.Row="1" Content="Compare" Grid.ColumnSpan="2" Width="200" Command="{Binding CompareCommand}"/>
+                    <Grid Grid.Column="0" Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label Content="Company structure" FontSize="20" />
+                        <TreeView Grid.Column="0" Grid.Row="1" ItemsSource="{Binding SnapshotCompareLeftItems}">
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <Setter Property="IsExpanded" Value="True"/>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type local:BranchViewModel}" ItemsSource="{Binding Children}">
+                                    <TreeViewItem IsExpanded="True">
+                                        <TreeViewItem.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Name}" Foreground="{Binding State, Converter={StaticResource stateToColorConverter}}" />
+                                                <TextBlock Text=" [NEW]" Foreground="Green" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:BranchState.New}}" />
+                                                <TextBlock Text=" [CANCELED]" Foreground="Red" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:BranchState.Removed}}" />
+                                            </StackPanel>
+                                        </TreeViewItem.Header>
+                                    </TreeViewItem>
+                                </HierarchicalDataTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type local:EmployeeViewModel}">
+                                    <TreeViewItem IsExpanded="True">
+                                        <TreeViewItem.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding FullName}" Foreground="{Binding State, Converter={StaticResource stateToColorConverter}}" />
+                                                <TextBlock Text=" [NEW]" Foreground="Green" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:EmployeeState.New}}" />
+                                                <TextBlock Text=" [LEFT]" Foreground="Red" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:EmployeeState.Removed}}" />
+                                            </StackPanel>
+                                        </TreeViewItem.Header>
+                                    </TreeViewItem>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label Content="Company structure" FontSize="20" />
+                        <TreeView Grid.Column="0" Grid.Row="1" ItemsSource="{Binding SnapshotCompareRightItems}">
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <Setter Property="IsExpanded" Value="True"/>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type local:BranchViewModel}" ItemsSource="{Binding Children}">
+                                    <TreeViewItem IsExpanded="True">
+                                        <TreeViewItem.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Name}" Foreground="{Binding State, Converter={StaticResource stateToColorConverter}}" />
+                                                <TextBlock Text=" [NEW]" Foreground="Green" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:BranchState.New}}" />
+                                                <TextBlock Text=" [CANCELED]" Foreground="Red" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:BranchState.Removed}}" />
+                                            </StackPanel>
+                                        </TreeViewItem.Header>
+                                    </TreeViewItem>
+                                </HierarchicalDataTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type local:EmployeeViewModel}">
+                                    <TreeViewItem IsExpanded="True">
+                                        <TreeViewItem.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding FullName}" Foreground="{Binding State, Converter={StaticResource stateToColorConverter}}" />
+                                                <TextBlock Text=" [NEW]" Foreground="Green" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:EmployeeState.New}}" />
+                                                <TextBlock Text=" [LEFT]" Foreground="Red" Visibility="{Binding State, Converter={StaticResource stateToVisibilityConverter}, ConverterParameter={x:Static local:EmployeeState.Removed}}" />
+                                            </StackPanel>
+                                        </TreeViewItem.Header>
+                                    </TreeViewItem>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

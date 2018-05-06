@@ -1,0 +1,5 @@
+1. MS SQL native - automatically maintains history, query is always against working table (never against history table), very convenient
+
+2. PostgreSQL temporal_tables extension - automatically maintains history, no support for querying (we must use set operations and query working table and also history table)
+
+3. PostgreSQL temporal without extension - querying has the same complexity as with the temporal_tables extension

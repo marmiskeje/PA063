@@ -1,0 +1,13 @@
+﻿USE PA036
+GO
+CREATE OR ALTER PROCEDURE demo.Branches_GetSnapshot
+(
+	@Date DATETIME2
+)
+AS
+BEGIN
+	SELECT ID, Name, ParentID
+	FROM demo.Branch
+	FOR SYSTEM_TIME AS OF @date
+	ORDER BY ID
+END
